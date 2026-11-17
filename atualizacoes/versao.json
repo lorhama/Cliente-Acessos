@@ -1,0 +1,14 @@
+{
+ "versao": "1.0.0",
+ "data": "17/11/2026",
+ "arquivo": "atualizacao-1.0.0.zip",
+ "sha256": "7c213df4617728fd9c7f95a13c3452ae27d3795952cd2577595e3b8782d06043",
+ "tamanho": 57776,
+ "assinatura": "I5jK2rjZ5DQJO8SanW8EMULVa/o2Vl8JexSu/VV3SlhYaxIwKQh3LnBIoBtQT8jQ8f3W6H927GR8h0b3p1uZCw==",
+ "notas": [
+  {
+   "tipo": "melhoria",
+   "texto": "Primeira versão: menu lateral com as lojas (código, serviço e status), conexões do TeamViewer por loja e sessões do Web Client abertas em abas dentro do programa, com histórico de atendimentos, backup automático e atualização pelo GitHub"
+  }
+ ]
+}

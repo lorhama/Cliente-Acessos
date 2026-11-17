@@ -1,0 +1,55 @@
+{
+  "name": "cliente-acessos",
+  "productName": "Cliente Acessos",
+  "version": "1.0.0",
+  "description": "Cliente Acessos - painel de acessos remotos por loja (Web Client do TeamViewer)",
+  "main": "main.js",
+  "author": "Lorhama",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis",
+    "test": "node test/testes.js"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "br.com.lorhama.clienteacessos",
+    "productName": "Cliente Acessos",
+    "asar": false,
+    "files": [
+      "main.js",
+      "preload.js",
+      "dados.js",
+      "util.js",
+      "versao-lib.js",
+      "atualizador.js",
+      "atualizar.ps1",
+      "atualizacao.json",
+      "atualizacao-publica.pem",
+      "novidades.json",
+      "renderer/**",
+      "build/icon.png",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Cliente Acessos",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "guid": "3f9d2c1a-6b7e-4e58-9a2d-8c4b1f6e7a05",
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}

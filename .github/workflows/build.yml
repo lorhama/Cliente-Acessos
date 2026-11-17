@@ -1,0 +1,28 @@
+name: Gerar instalador Windows (.exe)
+# Roda sozinho ao criar uma tag v* (ex.: v1.0.0) ou manualmente em Actions > Run workflow.
+# O instalador (.exe) fica em "Artifacts" da execução e, quando foi uma tag, também em "Releases".
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install
+      - run: npm test
+      - run: npm run dist -- --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: instalador-windows
+          path: dist/*.exe
+      - name: Anexar o instalador na Release (só quando for tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.exe

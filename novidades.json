@@ -1,0 +1,14 @@
+{
+ "versoes": [
+  {
+   "versao": "1.0.0",
+   "data": "17/11/2026",
+   "itens": [
+    {
+     "tipo": "melhoria",
+     "texto": "Primeira versão: menu lateral com as lojas (código, serviço e status), conexões do TeamViewer por loja e sessões do Web Client abertas em abas dentro do programa, com histórico de atendimentos, backup automático e atualização pelo GitHub"
+    }
+   ]
+  }
+ ]
+}

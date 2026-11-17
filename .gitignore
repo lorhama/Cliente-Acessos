@@ -1,0 +1,7 @@
+node_modules/
+dist/
+data/
+dados.json
+.chaves/
+*.pem.privada
+chave-privada*

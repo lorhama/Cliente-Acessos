@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src https:; child-src https:">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cliente Acessos</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="side-head">
+      <h1>Cliente Acessos</h1>
+      <button class="btn primary" data-action="nova-loja">+ Nova loja</button>
+    </div>
+    <input id="busca" type="search" placeholder="Buscar código, loja ou serviço" aria-label="Buscar">
+    <div class="chips" id="chips"></div>
+    <nav id="lista" class="lista" aria-label="Lojas em atendimento"></nav>
+    <div class="side-foot">
+      <div id="updBanner" class="upd" hidden></div>
+      <button class="btn ghost" data-action="config">Configurações e backup</button>
+      <div class="versao" id="versao"></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div id="topo" class="topo"></div>
+    <div id="abas" class="abas"></div>
+    <div id="faixa" class="faixa" hidden></div>
+    <div id="stage" class="stage">
+      <div id="viewLista" class="view"></div>
+      <div id="viewHist" class="view" hidden></div>
+    </div>
+  </main>
+</div>
+
+<!-- Loja -->
+<dialog id="dlgLoja">
+  <form id="formLoja">
+    <h2 id="tituloLoja">Nova loja</h2>
+    <label class="campo">Código da farmácia
+      <input type="text" name="codigo" required maxlength="30" autocomplete="off">
+    </label>
+    <label class="campo">Nome da loja (opcional)
+      <input type="text" name="nome" maxlength="80" autocomplete="off">
+    </label>
+    <label class="campo">Tipo de serviço
+      <input type="text" name="servico" list="servicos" maxlength="60" autocomplete="off" placeholder="Ex.: Implantação, Treinamento, Suporte">
+      <datalist id="servicos">
+        <option value="Implantação"><option value="Treinamento"><option value="Suporte"><option value="Atualização"><option value="Importação de dados">
+      </datalist>
+    </label>
+    <label class="campo">Status
+      <select name="status">
+        <option value="em-andamento">Em andamento</option>
+        <option value="aguardando">Aguardando</option>
+        <option value="concluido">Concluído</option>
+      </select>
+    </label>
+    <div class="dlg-actions">
+      <button type="button" class="btn" data-action="fechar">Cancelar</button>
+      <button type="submit" class="btn primary">Salvar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Conexão -->
+<dialog id="dlgCon">
+  <form id="formCon">
+    <h2 id="tituloCon">Novo TeamViewer</h2>
+    <label class="campo">Apelido (ex.: Caixa 1, Servidor, Retaguarda)
+      <input type="text" name="apelido" required maxlength="60" autocomplete="off">
+    </label>
+    <label class="campo">ID do TeamViewer
+      <input type="text" name="tvid" required inputmode="numeric" maxlength="16" autocomplete="off" placeholder="123 456 789">
+    </label>
+    <label class="campo">Observação (opcional)
+      <textarea name="obs" rows="2" maxlength="200"></textarea>
+    </label>
+    <div class="dlg-actions">
+      <button type="button" class="btn" data-action="fechar">Cancelar</button>
+      <button type="submit" class="btn primary">Salvar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Configurações -->
+<dialog id="dlgCfg">
+  <div class="dlg-body">
+    <h2>Configurações e backup</h2>
+    <label class="campo">Endereço do Web Client do TeamViewer
+      <input type="text" id="urlWeb" maxlength="200" autocomplete="off">
+    </label>
+    <div class="linha">
+      <button class="btn" data-action="salvar-url">Salvar endereço</button>
+      <button class="btn" data-action="url-padrao">Restaurar o padrão</button>
+    </div>
+    <div class="dica">Vale para as próximas sessões que você abrir. Precisa ser um endereço https do teamviewer.com.</div>
+    <div class="linha">
+      <button class="btn" data-action="backup">Fazer backup agora</button>
+      <button class="btn" data-action="pasta">Abrir pasta de dados e backups</button>
+    </div>
+    <div class="dica">Os dados das lojas ficam só neste computador. Um backup é feito ao abrir e ao fechar (guarda os últimos 14).</div>
+    <div class="dlg-actions"><button class="btn primary" data-action="fechar">Fechar</button></div>
+  </div>
+</dialog>
+
+<!-- Atualização -->
+<dialog id="dlgUpd">
+  <div class="dlg-body">
+    <h2>Atualização do programa</h2>
+    <div id="updCorpo"></div>
+    <div class="dlg-actions" id="updAcoes"></div>
+  </div>
+</dialog>
+
+<!-- Novidades / Sobre -->
+<dialog id="dlgInfo">
+  <div class="dlg-body">
+    <h2 id="infoTitulo"></h2>
+    <div id="infoCorpo"></div>
+    <div class="dlg-actions"><button class="btn primary" data-action="fechar">Fechar</button></div>
+  </div>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>
