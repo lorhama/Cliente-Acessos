@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld('acessosApi', {
   salvar: d => ipcRenderer.invoke('dados:salvar', d),
   salvarSync: d => ipcRenderer.sendSync('dados:salvar-sync', d),
   copiar: t => ipcRenderer.invoke('copiar', t),
+  copiarSenha: t => ipcRenderer.invoke('copiar-senha', t),
   info: () => ipcRenderer.invoke('app:info'),
   backupAgora: () => ipcRenderer.invoke('backup:agora'),
   abrirPasta: () => ipcRenderer.invoke('pasta:abrir'),

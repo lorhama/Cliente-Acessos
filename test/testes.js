@@ -80,6 +80,18 @@ t('normalizar corrige lixo e limita campos', () => {
   assert.strictEqual(n.historico.length, 1); assert.strictEqual(n.config.urlWebClient, dados.URL_PADRAO); assert.strictEqual(n.ui.filtro, 'todas');
   assert.deepStrictEqual(dados.normalizar(null).lojas, []);
 });
+t('senha: cada conexão guarda a sua; a senha padrão vem como #tvtrier! e pode ser trocada; limites', () => {
+  assert.strictEqual(dados.SENHA_PADRAO, '#tvtrier!');
+  assert.strictEqual(dados.normalizar(null).config.senhaPadrao, '#tvtrier!');
+  assert.strictEqual(dados.normalizar({ config: {} }).config.senhaPadrao, '#tvtrier!', 'dados antigos (sem o campo) ganham a padrão');
+  assert.strictEqual(dados.normalizar({ config: { senhaPadrao: 'outra#1' } }).config.senhaPadrao, 'outra#1');
+  assert.strictEqual(dados.normalizar({ config: { senhaPadrao: '' } }).config.senhaPadrao, '', 'vazia é permitido (sem sugestão)');
+  assert.strictEqual(dados.normalizar({ config: { senhaPadrao: 5 } }).config.senhaPadrao, '#tvtrier!');
+  const n = dados.normalizar({ lojas: [{ codigo: '1', conexoes: [{ apelido: 'A', tvid: '123456789', senha: '#tvtrier!' }, { apelido: 'B', tvid: '987654321' }, { apelido: 'C', tvid: '111111111', senha: 'x'.repeat(300) }] }] });
+  assert.strictEqual(n.lojas[0].conexoes[0].senha, '#tvtrier!'); assert.strictEqual(n.lojas[0].conexoes[1].senha, ''); assert.strictEqual(n.lojas[0].conexoes[2].senha.length, 100);
+  const d = tmp(); dados.init(d); dados.salvar(n);
+  assert.deepStrictEqual(dados.carregar(), n);
+});
 t('salvar e carregar (ida e volta)', () => {
   const d = tmp(); dados.init(d);
   const x = dados.normalizar({ lojas: [{ id: 'L1', codigo: '33281', nome: 'Fraga', servico: 'Implantação', status: 'aguardando', conexoes: [{ id: 'C1', apelido: 'Caixa 1', tvid: '123456789', obs: '' }] }], ui: { sel: 'L1', filtro: 'todas' } });

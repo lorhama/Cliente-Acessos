@@ -114,14 +114,15 @@ function renderAbas() {
 function irAba(a) { const l = lojaAtual(); if (!l) return; abaDaLoja[l.id] = a; render(); }
 function renderFaixa() {
   const f = $('faixa'); f.replaceChildren();
-  const s = sessoes.get(abaAtual());
-  f.hidden = !s;
-  if (!s) return;
+  const s = sessoes.get(abaAtual()), l = lojaAtual();
+  f.hidden = !s || !l;
+  if (!s || !l) return;
   f.append(
     h('span', null, 'Sessão ', h('b', null, s.apelido), ' · ID ', h('b', null, fmtId(s.tvid)), ' · aberta há ', h('b', { id: 'tempo' }, fmtCron(Date.now() - s.inicio))),
     h('span', { class: 'espaco' }),
-    h('span', null, 'Cole o ID (Ctrl+V) no campo de conexão do Web Client.'),
+    h('span', null, 'Cole o ID (Ctrl+V) no Web Client; na tela da senha, use “Copiar senha”.'),
     h('button', { class: 'btn', type: 'button', onclick: () => copiarId(s.tvid) }, 'Copiar ID'),
+    h('button', { class: 'btn', type: 'button', onclick: () => copiarSenha(l.conexoes.find(x => x.id === s.conId)), disabled: !((l.conexoes.find(x => x.id === s.conId) || {}).senha) }, 'Copiar senha'),
     h('button', { class: 'btn', type: 'button', onclick: () => recarregar(s) }, 'Recarregar'),
     h('button', { class: 'btn danger', type: 'button', onclick: () => fecharSessao(s.conId, true) }, 'Fechar sessão'));
 }
@@ -155,9 +156,11 @@ function renderViews() {
             h('button', { class: 'mini', type: 'button', onclick: () => excluirCon(l, c) }, 'Excluir'))),
         h('div', { class: 'tvid' }, fmtId(c.tvid)),
         h('p', { class: 'obs' }, c.obs || ''),
+        h('div', { class: 'senha-info' }, c.senha ? 'Senha salva' : 'Sem senha salva'),
         h('div', { class: 'card-actions' },
           h('button', { class: 'btn primary', type: 'button', onclick: () => abrirSessao(l, c) }, aberta ? 'Ir para a sessão' : 'Conectar'),
-          h('button', { class: 'btn', type: 'button', onclick: () => copiarId(c.tvid) }, 'Copiar ID'))));
+          h('button', { class: 'btn', type: 'button', onclick: () => copiarId(c.tvid) }, 'Copiar ID'),
+          h('button', { class: 'btn', type: 'button', disabled: !c.senha, onclick: () => copiarSenha(c) }, 'Copiar senha'))));
     });
     v.append(cards);
   }
@@ -195,6 +198,10 @@ function render() {
 }
 
 // ---------- sessões do Web Client ----------
+function copiarSenha(c) {
+  if (!c || !c.senha) { toast('Esta conexão não tem senha salva. Use “Editar” para colocar.'); return; }
+  api.copiarSenha(c.senha); toast('Senha copiada. Cole no campo de senha; ela sai da área de transferência em 1 minuto.');
+}
 function copiarId(tvid) { api.copiar(String(tvid).replace(/\D/g, '')); toast('ID ' + fmtId(tvid) + ' copiado.'); }
 function criarSessao(l, c) {
   const wv = document.createElement('webview');
@@ -269,11 +276,22 @@ function excluirLoja(l) {
   D.ui.sel = D.lojas.length ? D.lojas[0].id : null;
   persistir(); render();
 }
+function mostrarSenha(id, ver) {
+  const i = $(id); i.type = ver ? 'text' : 'password';
+  const b = document.querySelector('[data-action="ver-senha"][data-alvo="' + id + '"]'); if (b) b.textContent = ver ? 'Ocultar' : 'Mostrar';
+}
+function ajudaSenha(nova) {
+  const a = $('ajudaSenha'); a.replaceChildren();
+  a.append(h('span', null, nova ? 'Sugerida: a senha padrão (muda em Configurações). Pode trocar só desta conexão.' : 'Deixe em branco se não quiser guardar a senha desta conexão.'),
+    h('button', { class: 'mini', type: 'button', onclick: () => { $('formCon').senha.value = D.config.senhaPadrao; } }, 'Usar a senha padrão'));
+}
 function abrirCon(c) {
   editCon = c ? c.id : null;
   $('tituloCon').textContent = c ? 'Editar TeamViewer' : 'Novo TeamViewer';
   const f = $('formCon');
   f.apelido.value = c ? c.apelido : ''; f.tvid.value = c ? fmtId(c.tvid) : ''; f.obs.value = c ? c.obs : '';
+  f.senha.value = c ? (c.senha || '') : D.config.senhaPadrao;   // nova conexão já vem com a senha padrão sugerida
+  mostrarSenha('conSenha', false); ajudaSenha(!c);
   $('dlgCon').showModal(); f.apelido.focus();
 }
 $('formCon').addEventListener('submit', e => {
@@ -281,7 +299,7 @@ $('formCon').addEventListener('submit', e => {
   const l = lojaAtual(); if (!l) return;
   const f = e.target, tvid = f.tvid.value.replace(/\D/g, '');
   if (tvid.length < 8 || tvid.length > 12) { toast('O ID do TeamViewer tem de 8 a 12 números.'); f.tvid.focus(); return; }
-  const v = { apelido: f.apelido.value.trim(), tvid, obs: f.obs.value.trim() };
+  const v = { apelido: f.apelido.value.trim(), tvid, obs: f.obs.value.trim(), senha: f.senha.value.trim() };
   if (!v.apelido) return;
   const c = l.conexoes.find(x => x.id === editCon);
   if (c) { Object.assign(c, v); const s = sessoes.get(c.id); if (s) { s.apelido = v.apelido; s.tvid = tvid; } }
@@ -297,7 +315,7 @@ function excluirCon(l, c) {
 }
 
 // ---------- configurações, atualização, novidades, sobre ----------
-function abrirCfg() { $('urlWeb').value = D.config.urlWebClient; $('dlgCfg').showModal(); }
+function abrirCfg() { $('urlWeb').value = D.config.urlWebClient; $('senhaPadrao').value = D.config.senhaPadrao; mostrarSenha('senhaPadrao', false); $('dlgCfg').showModal(); }
 function salvarUrl(url) {
   if (!urlOk(url)) { toast('Use um endereço https do teamviewer.com (ex.: ' + URL_PADRAO + ').'); return; }
   D.config.urlWebClient = url; $('urlWeb').value = url; persistir(); toast('Endereço salvo. Vale para as próximas sessões.');
@@ -375,6 +393,8 @@ document.addEventListener('click', e => {
     case 'fechar': { const d = a.closest('dialog'); if (d) d.close(); clearInterval(pollUpd); break; }
     case 'salvar-url': salvarUrl($('urlWeb').value.trim()); break;
     case 'url-padrao': salvarUrl(URL_PADRAO); break;
+    case 'ver-senha': { const id = a.dataset.alvo; mostrarSenha(id, $(id).type === 'password'); break; }
+    case 'salvar-senha-padrao': D.config.senhaPadrao = $('senhaPadrao').value.trim(); persistir(); toast(D.config.senhaPadrao ? 'Senha padrão salva. Já vem preenchida nas novas conexões.' : 'Senha padrão apagada. As novas conexões vão sem senha sugerida.'); break;
     case 'backup': backupAgora(); break;
     case 'pasta': api.abrirPasta(); break;
   }

@@ -75,6 +75,16 @@ if (!app.requestSingleInstanceLock()) {
   ipcMain.handle('dados:salvar', (e, d) => confiavel(e) ? dados.salvar(d) : { ok: false });
   ipcMain.on('dados:salvar-sync', (e, d) => { e.returnValue = confiavel(e) ? dados.salvar(d) : { ok: false }; });
   ipcMain.handle('copiar', (e, t) => { if (confiavel(e)) clipboard.writeText(String(t == null ? '' : t).slice(0, 200)); return true; });
+  // Senha do TeamViewer: vai para a área de transferência e sai de lá sozinha em 1 minuto (se ainda for ela que estiver copiada)
+  let senhaCopiada = '', tLimpar = null;
+  const limparSenhaCopiada = () => { try { if (senhaCopiada && clipboard.readText() === senhaCopiada) clipboard.clear(); } catch (x) { /* */ } senhaCopiada = ''; };
+  ipcMain.handle('copiar-senha', (e, t) => {
+    if (!confiavel(e)) return false;
+    senhaCopiada = String(t == null ? '' : t).slice(0, 100); if (!senhaCopiada) return false;
+    clipboard.writeText(senhaCopiada); clearTimeout(tLimpar); tLimpar = setTimeout(limparSenhaCopiada, 60000);
+    return true;
+  });
+  app.on('before-quit', limparSenhaCopiada);
   ipcMain.handle('app:info', e => confiavel(e) ? { versao: app.getVersion(), pasta: app.getPath('userData'), empacotado: app.isPackaged } : null);
   ipcMain.handle('backup:agora', e => confiavel(e) ? dados.backup(true) : { ok: false });
   ipcMain.handle('pasta:abrir', e => { if (confiavel(e)) shell.openPath(app.getPath('userData')); return true; });

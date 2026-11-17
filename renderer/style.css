@@ -81,7 +81,12 @@ webview.sessao.visivel{visibility:visible;pointer-events:auto}
 .card h3{margin:0;font-size:15px}
 .tvid{font-size:22px;font-weight:650;letter-spacing:.5px;font-variant-numeric:tabular-nums}
 .obs{margin:0;color:var(--muted);min-height:1.4em;white-space:pre-wrap}
-.card-actions{display:flex;gap:8px;margin-top:4px}
+.card-actions{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.senha-linha{display:flex;gap:8px}
+.senha-linha input{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.ajuda{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.ajuda .mini{padding:2px 8px;border:1px solid var(--line)}
+.senha-info{font-size:12px;color:var(--muted)}
 .card-menu{display:flex;gap:2px}
 .vazio{border:1px dashed var(--line);border-radius:14px;padding:40px 20px;text-align:center;color:var(--muted);grid-column:1/-1}
 .vazio h3{color:var(--ink);margin:0 0 6px}
@@ -107,7 +112,7 @@ dialog{border:1px solid var(--line);border-radius:14px;padding:0;background:var(
 dialog::backdrop{background:rgba(10,15,25,.5)}
 dialog form,dialog .dlg-body{padding:20px;display:flex;flex-direction:column;gap:12px}
 dialog h2{margin:0;font-size:18px}
-label.campo{display:flex;flex-direction:column;gap:4px;color:var(--muted);font-size:12.5px}
+label.campo,div.campo{display:flex;flex-direction:column;gap:4px;color:var(--muted);font-size:12.5px}
 .dlg-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}
 .dica{background:var(--bg);border-radius:10px;padding:10px 12px;color:var(--muted);font-size:13px}
 .linha{display:flex;gap:8px;flex-wrap:wrap}

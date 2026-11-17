@@ -5,13 +5,14 @@ const path = require('path');
 const { urlTeamViewerOk } = require('./util');
 
 const URL_PADRAO = 'https://web.teamviewer.com/';
+const SENHA_PADRAO = '#tvtrier!';   // sugerida no campo de senha de cada nova conexão (pode ser trocada em Configurações)
 const STATUS = ['em-andamento', 'aguardando', 'concluido'];
 const FILTROS = ['todas'].concat(STATUS);
 const MANTER_BACKUPS = 14;
 
 let pasta = '', arq = '';
 
-const vazio = () => ({ versaoDados: 1, lojas: [], historico: [], config: { urlWebClient: URL_PADRAO }, ui: { sel: null, filtro: 'todas' } });
+const vazio = () => ({ versaoDados: 1, lojas: [], historico: [], config: { urlWebClient: URL_PADRAO, senhaPadrao: SENHA_PADRAO }, ui: { sel: null, filtro: 'todas' } });
 const novoId = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
 const str = (v, max) => String(v == null ? '' : v).slice(0, max);
 
@@ -36,6 +37,7 @@ function normalizar(d) {
       apelido: str(c.apelido, 60),
       tvid: str(c.tvid, 16).replace(/\D/g, ''),
       obs: str(c.obs, 200),
+      senha: str(c.senha, 100),
     })),
   }));
   o.historico = (Array.isArray(d.historico) ? d.historico : []).slice(-5000).filter(h => h && typeof h === 'object').map(h => ({
@@ -44,6 +46,7 @@ function normalizar(d) {
   }));
   const u = d.config && d.config.urlWebClient;
   o.config.urlWebClient = urlTeamViewerOk(u) ? String(u) : URL_PADRAO;
+  if (d.config && typeof d.config.senhaPadrao === 'string') o.config.senhaPadrao = str(d.config.senhaPadrao, 100);
   const ui = d.ui || {};
   o.ui = { sel: str(ui.sel, 40) || null, filtro: FILTROS.includes(ui.filtro) ? ui.filtro : 'todas' };
   return o;
@@ -91,4 +94,4 @@ function backup(agora) {
   } catch (e) { return { ok: false, erro: e.message }; }
 }
 
-module.exports = { init, carregar, salvar, backup, normalizar, URL_PADRAO, listaBackups };
+module.exports = { init, carregar, salvar, backup, normalizar, URL_PADRAO, SENHA_PADRAO, listaBackups };

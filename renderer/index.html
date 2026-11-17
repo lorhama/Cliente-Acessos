@@ -75,6 +75,14 @@
     <label class="campo">ID do TeamViewer
       <input type="text" name="tvid" required inputmode="numeric" maxlength="16" autocomplete="off" placeholder="123 456 789">
     </label>
+    <div class="campo">
+      <label for="conSenha">Senha do TeamViewer (a que você configura no cliente)</label>
+      <div class="senha-linha">
+        <input type="password" id="conSenha" name="senha" maxlength="100" autocomplete="off" spellcheck="false">
+        <button type="button" class="btn" data-action="ver-senha" data-alvo="conSenha">Mostrar</button>
+      </div>
+      <div class="ajuda" id="ajudaSenha"></div>
+    </div>
     <label class="campo">Observação (opcional)
       <textarea name="obs" rows="2" maxlength="200"></textarea>
     </label>
@@ -97,6 +105,15 @@
       <button class="btn" data-action="url-padrao">Restaurar o padrão</button>
     </div>
     <div class="dica">Vale para as próximas sessões que você abrir. Precisa ser um endereço https do teamviewer.com.</div>
+    <div class="campo">
+      <label for="senhaPadrao">Senha padrão sugerida nas novas conexões</label>
+      <div class="senha-linha">
+        <input type="password" id="senhaPadrao" maxlength="100" autocomplete="off" spellcheck="false">
+        <button type="button" class="btn" data-action="ver-senha" data-alvo="senhaPadrao">Mostrar</button>
+      </div>
+    </div>
+    <div class="linha"><button class="btn" data-action="salvar-senha-padrao">Salvar senha padrão</button></div>
+    <div class="dica">Aparece já preenchida em “Novo TeamViewer” (dá para trocar em cada conexão). As senhas ficam só neste computador, no arquivo de dados do programa, sem criptografia.</div>
     <div class="linha">
       <button class="btn" data-action="backup">Fazer backup agora</button>
       <button class="btn" data-action="pasta">Abrir pasta de dados e backups</button>

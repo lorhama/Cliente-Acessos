@@ -1,6 +1,20 @@
 {
  "versoes": [
   {
+   "versao": "1.0.2",
+   "data": "17/11/2026",
+   "itens": [
+    {
+     "tipo": "melhoria",
+     "texto": "Senha do TeamViewer em cada conexão, já sugerida com a senha padrão (#tvtrier!), que pode ser trocada em Configurações"
+    },
+    {
+     "tipo": "melhoria",
+     "texto": "Botão “Copiar senha” no cartão e na faixa da sessão (a senha sai da área de transferência em 1 minuto)"
+    }
+   ]
+  },
+  {
    "versao": "1.0.1",
    "data": "17/11/2026",
    "itens": [
