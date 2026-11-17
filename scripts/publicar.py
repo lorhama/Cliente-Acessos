@@ -175,7 +175,8 @@ def publicar(a, pkg, pj, versao, hoje, chave):
 
     if not a.sem_testes and shutil.which('node'):
         print('Rodando os testes…')
-        if subprocess.call(['node', os.path.join(RAIZ, 'test', 'testes.js')], cwd=RAIZ) != 0:
+        # PUBLICANDO=1: o manifesto ainda é o da versão anterior (é gerado logo abaixo), então só esse confronto de versão é adiado
+        if subprocess.call(['node', os.path.join(RAIZ, 'test', 'testes.js')], cwd=RAIZ, env={**os.environ, 'PUBLICANDO': '1'}) != 0:
             sys.exit('Os testes falharam: nada foi publicado e os arquivos de versão voltaram ao que eram.')
 
     os.makedirs(SAIDA, exist_ok=True)
@@ -209,6 +210,10 @@ def publicar(a, pkg, pj, versao, hoje, chave):
         for c in copias:
             shutil.copy2(c, pasta)
         print('Cópia guardada em', pasta, '(' + ', '.join(os.path.basename(c) for c in copias) + ')')
+    if not a.sem_testes and shutil.which('node'):
+        print('Conferindo o pacote e o manifesto recém-gerados…')
+        if subprocess.call(['node', os.path.join(RAIZ, 'test', 'testes.js')], cwd=RAIZ) != 0:
+            sys.exit('ATENÇÃO: o pacote gerado não passou na conferência final. Não publique no GitHub.')
     print('Próximo passo: git add -A && git commit -m "Versão ' + versao + '" && git push')
 
 

@@ -2,7 +2,7 @@
 // Tela do Cliente Acessos: menu lateral com as lojas, conexões do TeamViewer da loja e sessões do Web Client em abas.
 // Tudo é montado com textContent (nunca innerHTML com dados digitados), então nome/observação não executam nada.
 
-const api = window.api;
+const api = window.acessosApi;   // exposto pelo preload (nome diferente de 'api' de propósito: ver preload.js)
 const $ = id => document.getElementById(id);
 const HOSTS_OK = /(^|\.)(teamviewer\.com|tvwebservices\.org)$/i;
 const URL_PADRAO = 'https://web.teamviewer.com/';

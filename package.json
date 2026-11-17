@@ -1,7 +1,7 @@
 {
   "name": "cliente-acessos",
   "productName": "Cliente Acessos",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Cliente Acessos - painel de acessos remotos por loja (Web Client do TeamViewer)",
   "main": "main.js",
   "author": "Lorhama",

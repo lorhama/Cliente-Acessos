@@ -1,6 +1,16 @@
 {
  "versoes": [
   {
+   "versao": "1.0.1",
+   "data": "17/11/2026",
+   "itens": [
+    {
+     "tipo": "correcao",
+     "texto": "Corrigido: a tela não carregava e o botão “+ Nova loja” não respondia no programa instalado"
+    }
+   ]
+  },
+  {
    "versao": "1.0.0",
    "data": "17/11/2026",
    "itens": [

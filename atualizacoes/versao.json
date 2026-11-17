@@ -1,14 +1,14 @@
 {
- "versao": "1.0.0",
+ "versao": "1.0.1",
  "data": "17/11/2026",
- "arquivo": "atualizacao-1.0.0.zip",
- "sha256": "7c213df4617728fd9c7f95a13c3452ae27d3795952cd2577595e3b8782d06043",
- "tamanho": 57776,
- "assinatura": "I5jK2rjZ5DQJO8SanW8EMULVa/o2Vl8JexSu/VV3SlhYaxIwKQh3LnBIoBtQT8jQ8f3W6H927GR8h0b3p1uZCw==",
+ "arquivo": "atualizacao-1.0.1.zip",
+ "sha256": "0eda9a9f64ef9dc6c80b23d12e34357102974f46ff93bab2d6626ce345f14454",
+ "tamanho": 58039,
+ "assinatura": "5BH3VyqU7FQCufWCwWBiJldHFVKtBkMV1JGYFaQRvBafNYyvE/TXvtPQVV2cC43qfT8VEXTJ3Yto+PCyqfc/AQ==",
  "notas": [
   {
-   "tipo": "melhoria",
-   "texto": "Primeira versão: menu lateral com as lojas (código, serviço e status), conexões do TeamViewer por loja e sessões do Web Client abertas em abas dentro do programa, com histórico de atendimentos, backup automático e atualização pelo GitHub"
+   "tipo": "correcao",
+   "texto": "Corrigido: a tela não carregava e o botão “+ Nova loja” não respondia no programa instalado"
   }
  ]
 }

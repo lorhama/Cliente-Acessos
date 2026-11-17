@@ -68,7 +68,7 @@ t('manifesto publicado (atualizacoes/versao.json) confere com a chave embutida e
   assert.strictEqual(crypto.createHash('sha256').update(zip).digest('hex'), m.sha256, 'SHA-256 do zip diferente do manifesto');
   assert.strictEqual(zip.length, m.tamanho, 'tamanho do zip diferente do manifesto');
   const pkg = JSON.parse(fs.readFileSync(path.join(RAIZ, 'package.json'), 'utf8'));
-  assert(!lib.maior(pkg.version, m.versao) , 'package.json (' + pkg.version + ') está à frente do manifesto (' + m.versao + '): falta rodar o publicador');
+  if (!process.env.PUBLICANDO) assert(!lib.maior(pkg.version, m.versao) , 'package.json (' + pkg.version + ') está à frente do manifesto (' + m.versao + '): falta rodar o publicador');
 });
 
 console.log('dados');
@@ -140,6 +140,24 @@ t('tela: index.html liga style.css e app.js, com CSP', () => {
   assert(h.includes('style.css') && h.includes('app.js') && /Content-Security-Policy/.test(h));
   assert(!/<script(?![^>]*src=)/.test(h), 'script inline não é permitido pela CSP');
   assert(!/ on\w+=/.test(h), 'atributo de evento inline não é permitido pela CSP');
+});
+
+t('tela: app.js executa sem erro quando a ponte do preload é uma propriedade global não configurável (como no Electron)', () => {
+  const vm = require('vm');
+  const pre = fs.readFileSync(path.join(RAIZ, 'preload.js'), 'utf8');
+  const nomes = [...pre.matchAll(/exposeInMainWorld\(\s*'([^']+)'/g)].map(m => m[1]);
+  assert(nomes.length === 1, 'esperava uma ponte no preload');
+  const src = fs.readFileSync(path.join(RAIZ, 'renderer', 'app.js'), 'utf8');
+  const el = () => new Proxy(function () {}, { get: (_t, k) => k === 'classList' ? { toggle() {}, add() {}, remove() {} } : (k === 'dataset' ? {} : el()), apply: () => el(), set: () => true });
+  const ctx = vm.createContext({ document: { getElementById: el, createElement: el, addEventListener() {}, createTextNode: el, body: el() }, window: { addEventListener() {} }, setInterval() { return 0; }, setTimeout() { return 0; }, clearTimeout() {}, clearInterval() {}, console });
+  // a ponte: não configurável e não gravável, igual ao contextBridge
+  vm.runInContext('Object.defineProperty(globalThis, ' + JSON.stringify(nomes[0]) + ', { value: { info: async () => null, carregar: async () => null }, configurable: false, writable: false });', ctx);
+  ctx.window.acessosApi = vm.runInContext(nomes[0], ctx);
+  vm.runInContext(src, ctx, { filename: 'app.js' });   // SyntaxError aqui = a tela inteira não carrega
+  // e o mesmo nome 'api' (versão 1.0.0) tem de ser detectado como erro
+  const ctx2 = vm.createContext({});
+  vm.runInContext("Object.defineProperty(globalThis, 'api', { value: {}, configurable: false });", ctx2);
+  assert.throws(() => vm.runInContext('const api = 1;', ctx2), /already been declared/);
 });
 
 console.log('\n' + ok + ' passaram, ' + falhas + ' falharam');

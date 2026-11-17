@@ -1,7 +1,9 @@
 // Ponte segura entre a tela (renderer) e o programa (main). A tela não tem acesso direto ao Node.
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('api', {
+// O nome exposto NÃO pode coincidir com nenhuma const/let/function de nível superior do app.js
+// (o contextBridge cria a propriedade como não configurável: 'const api' na tela daria SyntaxError e a tela não carregaria).
+contextBridge.exposeInMainWorld('acessosApi', {
   carregar: () => ipcRenderer.invoke('dados:carregar'),
   salvar: d => ipcRenderer.invoke('dados:salvar', d),
   salvarSync: d => ipcRenderer.sendSync('dados:salvar-sync', d),
